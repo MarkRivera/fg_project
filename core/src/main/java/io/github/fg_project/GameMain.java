@@ -15,6 +15,7 @@ import com.badlogic.gdx.math.Vector3;
 import io.github.fg_project.render.DebugCamera;
 import io.github.fg_project.render.FighterAssetLoader;
 import io.github.fg_project.render.lights.DirectionalLightExBuilder;
+import io.github.fg_project.render.shaders.providers.AnimeShaderProvider;
 import net.mgsx.gltf.loaders.glb.GLBLoader;
 import net.mgsx.gltf.loaders.gltf.GLTFLoader;
 import net.mgsx.gltf.scene3d.attributes.PBRCubemapAttribute;
@@ -117,6 +118,7 @@ public class GameMain extends ApplicationAdapter
         // render
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         sceneManager.update(deltaTime);
+        sceneManager.setShaderProvider(new AnimeShaderProvider());
         sceneManager.render();
     }
 

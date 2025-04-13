@@ -2,11 +2,7 @@ package io.github.fg_project;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Cubemap;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.math.MathUtils;
@@ -44,6 +40,7 @@ public class GameMain extends ApplicationAdapter
 
     private DirectionalLightExBuilder lightBuilder;
     private DirectionalLightEx light;
+    private boolean debugMode = false;
 
     @Override
     public void create() {
@@ -55,13 +52,23 @@ public class GameMain extends ApplicationAdapter
             .load()
             .createScene();
         kafuScene = kafuLoader.build();
+        kafuScene.modelInstance.transform.setToRotation(Vector3.Y, 90);
         kafuScene.animationController.setAnimation("Armature|mixamo.com|Layer0" , -1);
+
+        if (debugMode) {
+            for (Mesh mesh : kafuScene.modelInstance.model.meshes) {
+                VertexAttributes attrs = mesh.getVertexAttributes();
+                for (VertexAttribute attr : attrs) {
+                    System.out.println("Attribute: " + attr.alias + " | Type: " + attr.type);
+                }
+            }
+        }
 
         cameraBuilder = new DebugCamera();
         cameraBuilder
             .setFOV(67f)
-            .setPosition(0f, 2f,5f)
-            .pointCameraAt(0f, 2f, 0f)
+            .setPosition(1f, 1.5f,1f)
+            .pointCameraAt(0f, 1.5f, 0f)
             .setNear(0.1f)
             .setFar(100f);
 
@@ -75,7 +82,7 @@ public class GameMain extends ApplicationAdapter
 
         light = lightBuilder.build();
 
-        sceneManager = new SceneManager(125);
+        sceneManager = new SceneManager(75);
 
         sceneManager.addScene(kafuScene);
         sceneManager.setCamera(camera);

@@ -30,6 +30,8 @@ void main() {
     vec4 worldPos = u_worldTrans * skinnedPosition;
     vec3 worldNormal = normalize(u_normalMatrix * skinnedNormal);
 
+    // TODO: Look into mask textures to exclude areas from this. Should fix outlines on face / eyes / etc
+    // TODO: Or Stencil Buffers
     float extrusion = u_outlineThickness;
 
     // Extrude vertex along the normal based on the computed extrusion factor

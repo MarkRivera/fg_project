@@ -8,6 +8,10 @@ import com.badlogic.gdx.graphics.g3d.model.Animation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 
+import io.github.fg_project.combat.Fighter;
+import io.github.fg_project.combat.kafu.Kafu;
+import io.github.fg_project.engine.math.FixedPoint;
+import io.github.fg_project.engine.math.Vec3fp;
 import io.github.fg_project.render.DebugCamera;
 import io.github.fg_project.render.FighterAssetLoader;
 import io.github.fg_project.render.lights.DirectionalLightExBuilder;
@@ -25,10 +29,9 @@ import net.mgsx.gltf.scene3d.utils.IBLBuilder;
 
 public class GameMain extends ApplicationAdapter
 {
-    private SceneManager sceneManager;
-    private FighterAssetLoader kafuLoader;
-    private Scene kafuScene;
+    private Fighter player1;
 
+    private SceneManager sceneManager;
     private DebugCamera cameraBuilder;
     private PerspectiveCamera camera;
     private Cubemap diffuseCubemap;
@@ -45,18 +48,14 @@ public class GameMain extends ApplicationAdapter
     @Override
     public void create() {
 
-        String fighterModelPath = "models/fighters/tifa/source/kachu.glb";
-        // create fighter scene
-        kafuLoader = new FighterAssetLoader()
-            .setAssetLocation(fighterModelPath)
-            .load()
-            .createScene();
-        kafuScene = kafuLoader.build();
-        kafuScene.modelInstance.transform.setToRotation(Vector3.Y, 90);
-        kafuScene.animationController.setAnimation("Armature|mixamo.com|Layer0" , -1);
+        Vec3fp player1Pos = new Vec3fp(
+            FixedPoint.fromInt(0),
+            FixedPoint.fromInt(0),
+            FixedPoint.fromInt(0));
+        player1 = new Kafu(player1Pos, 1000, 1000);
 
         if (debugMode) {
-            for (Mesh mesh : kafuScene.modelInstance.model.meshes) {
+            for (Mesh mesh : player1.fighterScene.modelInstance.model.meshes) {
                 VertexAttributes attrs = mesh.getVertexAttributes();
                 for (VertexAttribute attr : attrs) {
                     System.out.println("Attribute: " + attr.alias + " | Type: " + attr.type);
@@ -84,7 +83,7 @@ public class GameMain extends ApplicationAdapter
 
         sceneManager = new SceneManager(75);
 
-        sceneManager.addScene(kafuScene);
+        sceneManager.addScene(player1.fighterScene);
         sceneManager.setCamera(camera);
         sceneManager.environment.add(light);
 
@@ -129,10 +128,16 @@ public class GameMain extends ApplicationAdapter
         sceneManager.render();
     }
 
+    public void processInput() {}
+
+    public void update() {}
+
+    public void renderFrame() {}
+
     @Override
     public void dispose() {
         sceneManager.dispose();
-        kafuLoader.dispose();
+        player1.loader.dispose();
 
         environmentCubemap.dispose();
         diffuseCubemap.dispose();

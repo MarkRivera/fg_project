@@ -51,9 +51,10 @@ public class AnimeShader extends BaseShader {
 
     @Override
     public void render(Renderable renderable) {
-        this.renderOutline(renderable);
-        context.setDepthTest(1);
+        context.setDepthTest(GL20.GL_LEQUAL);
         context.setDepthMask(true);
+
+        this.renderOutline(renderable);
         this.renderCharacter(renderable);
     }
 
@@ -97,15 +98,16 @@ public class AnimeShader extends BaseShader {
 
         // 4. Pass it to the shader
         outlineShader.setUniformMatrix("u_normalMatrix", normalMatrix);
-        outlineShader.setUniformf("u_outlineThickness", 0.0001f);
+        outlineShader.setUniformf("u_outlineThickness", 0.006f);
 
         Vector4 outlineColor = new Vector4(0.0f, 0.0f, 0.0f, 1.0f);
 
         outlineShader.setUniformf("u_outlineColor", outlineColor);
-        outlineShader.setUniformf("u_cameraPos", camera.position.x, camera.position.y, camera.position.z);
 
+
+        context.setCullFace(GL20.GL_FRONT);
         renderable.meshPart.render(outlineShader);
-
+        context.setCullFace(GL20.GL_BACK);
     }
 
     private void renderCharacter(Renderable renderable) {

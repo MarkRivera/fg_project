@@ -39,6 +39,14 @@ public class Vec3fp {
             .add(this.z.multiply(other.z));
     }
 
+    public static Vec3fp zero() {
+        return new Vec3fp(
+            FixedPoint.fromInt(0),
+            FixedPoint.fromInt(0),
+            FixedPoint.fromInt(0)
+        );
+    }
+
     @Override
     public String toString() {
         return "(" + x.toString() + ", " + y.toString() + ", " + z.toString() + ")";

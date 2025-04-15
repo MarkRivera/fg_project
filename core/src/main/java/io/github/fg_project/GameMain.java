@@ -3,26 +3,16 @@ package io.github.fg_project;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.model.Animation;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector3;
-
 import io.github.fg_project.combat.Fighter;
 import io.github.fg_project.combat.kafu.Kafu;
 import io.github.fg_project.engine.math.FixedPoint;
 import io.github.fg_project.engine.math.Vec3fp;
 import io.github.fg_project.render.DebugCamera;
-import io.github.fg_project.render.FighterAssetLoader;
 import io.github.fg_project.render.lights.DirectionalLightExBuilder;
 import io.github.fg_project.render.shaders.providers.AnimeShaderProvider;
-import net.mgsx.gltf.loaders.glb.GLBLoader;
-import net.mgsx.gltf.loaders.gltf.GLTFLoader;
 import net.mgsx.gltf.scene3d.attributes.PBRCubemapAttribute;
 import net.mgsx.gltf.scene3d.attributes.PBRTextureAttribute;
 import net.mgsx.gltf.scene3d.lights.DirectionalLightEx;
-import net.mgsx.gltf.scene3d.scene.Scene;
-import net.mgsx.gltf.scene3d.scene.SceneAsset;
 import net.mgsx.gltf.scene3d.scene.SceneManager;
 import net.mgsx.gltf.scene3d.scene.SceneSkybox;
 import net.mgsx.gltf.scene3d.utils.IBLBuilder;
@@ -43,7 +33,6 @@ public class GameMain extends ApplicationAdapter
 
     private DirectionalLightExBuilder lightBuilder;
     private DirectionalLightEx light;
-    private boolean debugMode = false;
 
     @Override
     public void create() {
@@ -94,10 +83,10 @@ public class GameMain extends ApplicationAdapter
             FixedPoint.fromInt(0),
             FixedPoint.fromInt(0));
 
-        player1 = new Kafu(player1Pos, 1000, 1000);
+        player1 = new Kafu(player1Pos);
         player1.start();
 
-        sceneManager.addScene(player1.fighterScene);
+        sceneManager.addScene(player1.renderingComponent.fighterScene);
     }
 
     @Override
@@ -133,7 +122,7 @@ public class GameMain extends ApplicationAdapter
     @Override
     public void dispose() {
         sceneManager.dispose();
-        player1.loader.dispose();
+        player1.renderingComponent.loader.dispose();
 
         environmentCubemap.dispose();
         diffuseCubemap.dispose();

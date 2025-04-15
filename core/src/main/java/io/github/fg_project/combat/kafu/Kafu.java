@@ -2,10 +2,13 @@ package io.github.fg_project.combat.kafu;
 
 import com.badlogic.gdx.math.Vector3;
 import io.github.fg_project.combat.Fighter;
+import io.github.fg_project.combat.kafu.state.KafuStateManager;
+import io.github.fg_project.engine.math.FixedPoint;
 import io.github.fg_project.engine.math.Vec3fp;
 import io.github.fg_project.render.FighterAssetLoader;
 
 public class Kafu extends Fighter {
+    KafuStateManager kafuStateManager;
     public Kafu(Vec3fp initialPosition) {
         super(initialPosition);
 
@@ -17,7 +20,8 @@ public class Kafu extends Fighter {
             .createScene();
         fighterScene = loader.build();
         fighterScene.modelInstance.transform.setToRotation(Vector3.Y, 90);
-        fighterScene.animationController.setAnimation("Armature|mixamo.com|Layer0" , -1);
+
+        this.kafuStateManager = new KafuStateManager();
     }
 
     public Kafu(Vec3fp initialPosition, int startingHealth, int startingMp) {
@@ -31,6 +35,29 @@ public class Kafu extends Fighter {
             .createScene();
         fighterScene = loader.build();
         fighterScene.modelInstance.transform.setToRotation(Vector3.Y, 90);
-        fighterScene.animationController.setAnimation("Armature|mixamo.com|Layer0" , -1);
+
+        this.kafuStateManager = new KafuStateManager();
+    }
+
+    @Override
+    public void start() {
+        this.kafuStateManager.start(this.fighterScene.animationController);
+    }
+
+    @Override
+    public void update(FixedPoint deltaTime) {
+        this.kafuStateManager.update();
+    }
+    @Override
+    public void renderFrame() {
+
+    }
+    @Override
+    public void updateCollisionBounds() {
+
+    }
+    @Override
+    public void changeState() {
+
     }
 }

@@ -9,7 +9,7 @@ import io.github.fg_project.engine.math.Vec3fp;
 import io.github.fg_project.render.FighterAssetLoader;
 import net.mgsx.gltf.scene3d.scene.Scene;
 
-public class Fighter {
+public abstract class Fighter {
     // Assets
     public FighterAssetLoader loader;
     public Scene fighterScene;
@@ -23,7 +23,7 @@ public class Fighter {
     //State
     public FixedPoint health;
     public FixedPoint mp;
-    // FighterState
+
     public boolean onGround;
     // Collision
     // Visuals
@@ -49,15 +49,9 @@ public class Fighter {
         this.onGround = true;
     }
 
-    public void update(FixedPoint deltaTime) {
-        // Current State Update
-
-        // Game and Physics Update
-
-        // Update Collision Bounds
-    }
-
-    public void renderFrame() {}
-    public void updateCollisionBounds() {}
-    public void changeState(){}
+    public abstract void start();
+    public abstract void update(FixedPoint deltaTime);
+    public abstract void renderFrame();
+    public abstract void updateCollisionBounds();
+    public abstract void changeState();
 }

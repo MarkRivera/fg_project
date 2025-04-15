@@ -47,26 +47,10 @@ public class GameMain extends ApplicationAdapter
 
     @Override
     public void create() {
-
-        Vec3fp player1Pos = new Vec3fp(
-            FixedPoint.fromInt(0),
-            FixedPoint.fromInt(0),
-            FixedPoint.fromInt(0));
-        player1 = new Kafu(player1Pos, 1000, 1000);
-
-        if (debugMode) {
-            for (Mesh mesh : player1.fighterScene.modelInstance.model.meshes) {
-                VertexAttributes attrs = mesh.getVertexAttributes();
-                for (VertexAttribute attr : attrs) {
-                    System.out.println("Attribute: " + attr.alias + " | Type: " + attr.type);
-                }
-            }
-        }
-
         cameraBuilder = new DebugCamera();
         cameraBuilder
-            .setFOV(67f)
-            .setPosition(1f, 1.5f,1f)
+            .setFOV(75f)
+            .setPosition(0, 1.5f,3f)
             .pointCameraAt(0f, 1.5f, 0f)
             .setNear(0.1f)
             .setFar(100f);
@@ -83,7 +67,6 @@ public class GameMain extends ApplicationAdapter
 
         sceneManager = new SceneManager(75);
 
-        sceneManager.addScene(player1.fighterScene);
         sceneManager.setCamera(camera);
         sceneManager.environment.add(light);
 
@@ -105,6 +88,16 @@ public class GameMain extends ApplicationAdapter
         // setup skybox
         skybox = new SceneSkybox(environmentCubemap);
         sceneManager.setSkyBox(skybox);
+
+        Vec3fp player1Pos = new Vec3fp(
+            FixedPoint.fromInt(0),
+            FixedPoint.fromInt(0),
+            FixedPoint.fromInt(0));
+
+        player1 = new Kafu(player1Pos, 1000, 1000);
+        player1.start();
+
+        sceneManager.addScene(player1.fighterScene);
     }
 
     @Override
@@ -118,8 +111,11 @@ public class GameMain extends ApplicationAdapter
         time += deltaTime;
 
         // animate camera
-
         camera.update();
+
+        // Update player 1
+        FixedPoint fixedDelta = FixedPoint.fromFloat(deltaTime);
+        player1.update(fixedDelta);
 
         // render
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);

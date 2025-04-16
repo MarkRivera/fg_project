@@ -1,5 +1,6 @@
 package io.github.fg_project.components;
 
+import com.badlogic.gdx.Gdx;
 import io.github.fg_project.engine.math.Vec3fp;
 
 public class PhysicsComponent {
@@ -13,4 +14,7 @@ public class PhysicsComponent {
         this.acceleration = Vec3fp.zero();
     }
 
+    public void jump() {
+        Gdx.app.log("PHYSICS", "This fighter jumped!");
+    }
 }

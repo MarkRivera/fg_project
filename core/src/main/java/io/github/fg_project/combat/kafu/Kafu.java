@@ -1,42 +1,41 @@
 package io.github.fg_project.combat.kafu;
 
-import com.badlogic.gdx.math.Vector3;
 import io.github.fg_project.combat.Fighter;
-import io.github.fg_project.combat.kafu.state.KafuStateManager;
+import io.github.fg_project.combat.commands.InputComponent;
+import io.github.fg_project.combat.kafu.state.KafuStateManagerComponent;
 import io.github.fg_project.components.HealthComponent;
 import io.github.fg_project.components.ManaComponent;
 import io.github.fg_project.components.PhysicsComponent;
 import io.github.fg_project.components.RenderingComponent;
 import io.github.fg_project.engine.math.FixedPoint;
 import io.github.fg_project.engine.math.Vec3fp;
-import io.github.fg_project.render.FighterAssetLoader;
+
 
 public class Kafu extends Fighter {
-    KafuStateManager kafuStateManager;
     public Kafu(Vec3fp initialPosition) {
-        // create fighter scene
         super(
             new PhysicsComponent(initialPosition),
             new HealthComponent(1000, 1000),
             new ManaComponent(1000, 1000),
-            new RenderingComponent("models/fighters/tifa/source/kachu.glb")
+            new RenderingComponent("models/fighters/tifa/source/kachu.glb"),
+            new InputComponent(),
+            new KafuStateManagerComponent()
         );
-
-        // Make this a component later
-        this.kafuStateManager = new KafuStateManager();
     }
+
 
     @Override
     public void start() {
-        this.kafuStateManager.start(this.renderingComponent.fighterScene.animationController);
+        this.setupInstances(this.stateManagerComponent);
+        this.stateManagerComponent.start();
     }
 
     @Override
     public void update(FixedPoint deltaTime) {
-        this.kafuStateManager.update();
+        this.stateManagerComponent.update();
     }
     @Override
-    public void renderFrame() {
+    public void render() {
 
     }
     @Override

@@ -1,10 +1,17 @@
 package io.github.fg_project.combat.kafu.state;
 
-import io.github.fg_project.combat.kafu.state.interfaces.BaseState;
+import io.github.fg_project.combat.Fighter;
 
 public abstract class KafuBaseState {
-    public abstract void onEnter(KafuStateManager kafuContext);
-    public abstract void updateState(KafuStateManager kafuContext);
-    public abstract void onExit(KafuStateManager kafuContext);
-    public abstract void onCollisionEnter(KafuStateManager kafuContext);
+    protected Fighter core;
+
+    public abstract void handleInput();
+    public abstract void onEnter(KafuStateManagerComponent ctx);
+    public abstract void updateState(KafuStateManagerComponent ctx);
+    public abstract void onExit(KafuStateManagerComponent ctx);
+    public abstract void onCollisionEnter(KafuStateManagerComponent ctx);
+
+    public void setCore(Fighter core) {
+        this.core = core;
+    }
 }

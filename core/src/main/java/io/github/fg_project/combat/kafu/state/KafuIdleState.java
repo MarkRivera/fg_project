@@ -1,25 +1,34 @@
 package io.github.fg_project.combat.kafu.state;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
+import io.github.fg_project.combat.interfaces.Command;
 
 public class KafuIdleState extends KafuBaseState {
     @Override
-    public void onEnter(KafuStateManager kafuContext) {
-        System.out.println("Hello from Kafu's Idle State!");
-        kafuContext.animationController.setAnimation("Armature|mixamo.com|Layer0" , -1);
+    public void handleInput() {
+
     }
+
     @Override
-    public void updateState(KafuStateManager kafuContext) {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-            kafuContext.switchState(kafuContext.jumpState);
+    public void onEnter(KafuStateManagerComponent ctx) {
+        System.out.println("Hello from Kafu's Idle State!");
+        this.core.renderingComponent.fighterScene.animationController.setAnimation("Armature|mixamo.com|Layer0" , -1);
+    }
+
+    @Override
+    public void updateState(KafuStateManagerComponent ctx) {
+        Command command = this.core.inputComponent.handleInput();
+        if (command != null) {
+            ctx.switchState(ctx.jumpState);
         }
     }
+
     @Override
-    public void onExit(KafuStateManager kafuContext) {
+    public void onExit(KafuStateManagerComponent ctx) {
         System.out.println("Leaving from Kafu's Idle State!");
     }
 
     @Override
-    public void onCollisionEnter(KafuStateManager kafuContext) {}
+    public void onCollisionEnter(KafuStateManagerComponent ctx) {
+
+    }
 }

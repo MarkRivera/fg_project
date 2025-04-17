@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import io.github.fg_project.combat.Fighter;
 import io.github.fg_project.combat.kafu.Kafu;
+import io.github.fg_project.combat.kafu.state.KafuIdleState;
 import io.github.fg_project.engine.math.FixedPoint;
 import io.github.fg_project.engine.math.Vec3fp;
 import io.github.fg_project.render.DebugCamera;
@@ -84,7 +85,7 @@ public class GameMain extends ApplicationAdapter
             FixedPoint.fromInt(0));
 
         player1 = new Kafu(player1Pos);
-        player1.start();
+        player1.start(new KafuIdleState());
 
         sceneManager.addScene(player1.renderingComponent.fighterScene);
     }
@@ -104,7 +105,7 @@ public class GameMain extends ApplicationAdapter
 
         // Update player 1
         FixedPoint fixedDelta = FixedPoint.fromFloat(deltaTime);
-        player1.update(fixedDelta);
+        player1.update();
 
         // render
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);

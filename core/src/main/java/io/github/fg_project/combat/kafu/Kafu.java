@@ -2,12 +2,11 @@ package io.github.fg_project.combat.kafu;
 
 import io.github.fg_project.combat.Fighter;
 import io.github.fg_project.combat.commands.InputComponent;
-import io.github.fg_project.combat.kafu.state.KafuStateManagerComponent;
+import io.github.fg_project.combat.interfaces.BaseState;
 import io.github.fg_project.components.HealthComponent;
 import io.github.fg_project.components.ManaComponent;
 import io.github.fg_project.components.PhysicsComponent;
 import io.github.fg_project.components.RenderingComponent;
-import io.github.fg_project.engine.math.FixedPoint;
 import io.github.fg_project.engine.math.Vec3fp;
 
 
@@ -18,32 +17,35 @@ public class Kafu extends Fighter {
             new HealthComponent(1000, 1000),
             new ManaComponent(1000, 1000),
             new RenderingComponent("models/fighters/tifa/source/kachu.glb"),
-            new InputComponent(),
-            new KafuStateManagerComponent()
+            new InputComponent()
         );
     }
 
-
     @Override
-    public void start() {
-        this.setupInstances(this.stateManagerComponent);
-        this.stateManagerComponent.start();
+    public void handleInput() {
+        currentState.handleInput(this);
     }
 
     @Override
-    public void update(FixedPoint deltaTime) {
-        this.stateManagerComponent.update();
+    public void start(BaseState state) {
+        currentState = state;
+        currentState.onEnter(this);
     }
+
+    @Override
+    public void update() {
+        currentState.update(this);
+    }
+
     @Override
     public void render() {
-
+        currentState.render(this);
     }
-    @Override
-    public void updateCollisionBounds() {
 
-    }
     @Override
-    public void changeState() {
-
+    public void transitionState(BaseState newState) {
+        currentState.onExit(this);
+        currentState = newState;
+        currentState.onEnter(this);
     }
 }

@@ -2,27 +2,23 @@ package io.github.fg_project.combat.kafu.state;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import io.github.fg_project.combat.Fighter;
+import io.github.fg_project.combat.interfaces.BaseState;
 
-public class KafuJumpState extends KafuBaseState {
+public class KafuJumpState extends BaseState {
     @Override
-    public void onEnter(KafuStateManagerComponent ctx) {
+    public void handleInput(Fighter fighter) {}
+    @Override
+    public void onEnter(Fighter fighter) {
         System.out.println("Hello from Kafu's Jump State!");
+//        this.core.renderingComponent.fighterScene.animationController.setAnimation("Armature|mixamo.com|Layer0" , -1);
     }
-
     @Override
-    public void updateState(KafuStateManagerComponent ctx) {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.L)) {
-            ctx.switchState(ctx.idleState);
-        }
-    }
-
+    public void update(Fighter fighter) {}
     @Override
-    public void onExit(KafuStateManagerComponent ctx) {
-        System.out.println("Landing from Jump after 3 seconds, leaving jump state");
-    }
-
+    public void render(Fighter fighter) {}
     @Override
-    public void onCollisionEnter(KafuStateManagerComponent ctx) {
-
+    public void onExit(Fighter fighter) {
+        System.out.println("Leaving from Kafu's Jump State!");
     }
 }

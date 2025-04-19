@@ -4,8 +4,14 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import io.github.fg_project.combat.Fighter;
+import io.github.fg_project.combat.FighterFactory;
+import io.github.fg_project.combat.commands.InputComponent;
 import io.github.fg_project.combat.kafu.Kafu;
-import io.github.fg_project.combat.kafu.state.KafuIdleState;
+import io.github.fg_project.combat.kafu.state.KafuStateMachine;
+import io.github.fg_project.components.HealthComponent;
+import io.github.fg_project.components.ManaComponent;
+import io.github.fg_project.components.PhysicsComponent;
+import io.github.fg_project.components.RenderingComponent;
 import io.github.fg_project.engine.math.FixedPoint;
 import io.github.fg_project.engine.math.Vec3fp;
 import io.github.fg_project.render.DebugCamera;
@@ -84,8 +90,8 @@ public class GameMain extends ApplicationAdapter
             FixedPoint.fromInt(0),
             FixedPoint.fromInt(0));
 
-        player1 = new Kafu(player1Pos);
-        player1.start(new KafuIdleState());
+        player1 = FighterFactory.createKafu(player1Pos);
+        player1.start();
 
         sceneManager.addScene(player1.renderingComponent.fighterScene);
     }

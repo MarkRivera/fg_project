@@ -3,7 +3,11 @@ package io.github.fg_project.combat.commands;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import io.github.fg_project.combat.commands.concrete.*;
-import io.github.fg_project.combat.interfaces.Command;
+import io.github.fg_project.combat.commands.concrete.attacks.LightAttackCommand;
+import io.github.fg_project.combat.commands.concrete.movement.CrouchCommand;
+import io.github.fg_project.combat.commands.concrete.movement.JumpCommand;
+import io.github.fg_project.combat.commands.concrete.movement.WalkBackCommand;
+import io.github.fg_project.combat.commands.concrete.movement.WalkForwardCommand;
 
 public class InputComponent {
     private final int SPACE_BAR = Input.Keys.SPACE;

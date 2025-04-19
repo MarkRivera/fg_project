@@ -1,0 +1,12 @@
+package io.github.fg_project.combat.commands.concrete.movement;
+
+import io.github.fg_project.combat.Fighter;
+import io.github.fg_project.combat.commands.Command;
+import io.github.fg_project.combat.events.CommonEvent;
+
+public class WalkBackCommand implements Command {
+    @Override
+    public void execute(Fighter fighter) {
+        fighter.getStateMachine().handleEvent(CommonEvent.WALKBACK);
+    }
+}

@@ -2,6 +2,11 @@ package io.github.fg_project;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.controllers.Controller;
+import com.badlogic.gdx.controllers.ControllerAdapter;
+import com.badlogic.gdx.controllers.ControllerMapping;
+import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.*;
 import io.github.fg_project.combat.Fighter;
 import io.github.fg_project.combat.FighterFactory;
@@ -14,6 +19,12 @@ import io.github.fg_project.components.PhysicsComponent;
 import io.github.fg_project.components.RenderingComponent;
 import io.github.fg_project.engine.math.FixedPoint;
 import io.github.fg_project.engine.math.Vec3fp;
+import io.github.fg_project.input.InputMapper;
+import io.github.fg_project.input.actions.GameAction;
+import io.github.fg_project.input.bindings.ControllerAxisBinding;
+import io.github.fg_project.input.bindings.ControllerButtonBinding;
+import io.github.fg_project.input.bindings.KeyboardBinding;
+import io.github.fg_project.input.bindings.PressType;
 import io.github.fg_project.render.DebugCamera;
 import io.github.fg_project.render.lights.DirectionalLightExBuilder;
 import io.github.fg_project.render.shaders.providers.AnimeShaderProvider;
@@ -24,8 +35,11 @@ import net.mgsx.gltf.scene3d.scene.SceneManager;
 import net.mgsx.gltf.scene3d.scene.SceneSkybox;
 import net.mgsx.gltf.scene3d.utils.IBLBuilder;
 
+import java.util.EnumSet;
+
 public class GameMain extends ApplicationAdapter
 {
+    private InputMapper inputMapper;
     private Fighter player1;
 
     private SceneManager sceneManager;
@@ -37,12 +51,55 @@ public class GameMain extends ApplicationAdapter
     private Texture brdfLUT;
     private float time;
     private SceneSkybox skybox;
-
     private DirectionalLightExBuilder lightBuilder;
     private DirectionalLightEx light;
 
     @Override
     public void create() {
+        Controllers.addListener(new ControllerAdapter() {
+            @Override
+            public boolean buttonDown(Controller controller, int buttonCode) {
+                System.out.println("Button down: " + buttonCode);
+                return false;
+            }
+
+            @Override
+            public boolean axisMoved(Controller controller, int axisCode, float value) {
+                if (Math.abs(value) > 0.2f) { // filter deadzone
+                    System.out.println("Axis moved: " + axisCode + " value: " + value);
+                }
+                return false;
+            }
+        });
+
+        // TODO: Implement KEY BINDING MENU
+        inputMapper = new InputMapper();
+        inputMapper.bind(new KeyboardBinding(Input.Keys.SPACE, PressType.JUST_PRESSED), GameAction.UP);
+        inputMapper.bind(new KeyboardBinding(Input.Keys.A, PressType.PRESSED), GameAction.LEFT);
+        inputMapper.bind(new KeyboardBinding(Input.Keys.D, PressType.PRESSED), GameAction.RIGHT);
+        inputMapper.bind(new KeyboardBinding(Input.Keys.S, PressType.PRESSED), GameAction.DOWN);
+
+        Controller controller = Controllers.getCurrent();
+        if (controller != null) {
+            ControllerMapping mapping = controller.getMapping();
+            inputMapper.bind(new ControllerButtonBinding(controller.getPlayerIndex(), mapping.buttonDpadUp, PressType.JUST_PRESSED), GameAction.UP);
+            inputMapper.bind(new ControllerButtonBinding(controller.getPlayerIndex(), mapping.buttonDpadDown, PressType.PRESSED), GameAction.DOWN);
+            inputMapper.bind(new ControllerButtonBinding(controller.getPlayerIndex(), mapping.buttonDpadLeft, PressType.PRESSED), GameAction.LEFT);
+            inputMapper.bind(new ControllerButtonBinding(controller.getPlayerIndex(), mapping.buttonDpadRight, PressType.PRESSED), GameAction.RIGHT);
+
+            inputMapper.bind(new ControllerButtonBinding(controller.getPlayerIndex(), mapping.buttonX, PressType.JUST_PRESSED), GameAction.LIGHTATK);
+            inputMapper.bind(new ControllerButtonBinding(controller.getPlayerIndex(), mapping.buttonY, PressType.JUST_PRESSED), GameAction.MEDIUMATK);
+            inputMapper.bind(new ControllerButtonBinding(controller.getPlayerIndex(), mapping.buttonR1, PressType.JUST_PRESSED), GameAction.HEAVYATK);
+            inputMapper.bind(new ControllerButtonBinding(controller.getPlayerIndex(), mapping.buttonA, PressType.JUST_PRESSED), GameAction.SPECIALATK);
+
+            inputMapper.bind(new ControllerButtonBinding(controller.getPlayerIndex(), mapping.buttonB, PressType.JUST_PRESSED), GameAction.ASSISTONE);
+            inputMapper.bind(new ControllerAxisBinding(controller.getPlayerIndex(), 5, 1.0f, PressType.JUST_PRESSED), GameAction.ASSISTTWO);
+
+            inputMapper.bind(new ControllerButtonBinding(controller.getPlayerIndex(), mapping.buttonStart, PressType.JUST_PRESSED), GameAction.PAUSE);
+        }
+
+
+
         cameraBuilder = new DebugCamera();
         cameraBuilder
             .setFOV(75f)
@@ -103,6 +160,26 @@ public class GameMain extends ApplicationAdapter
 
     @Override
     public void render() {
+        EnumSet<GameAction> currentActions = inputMapper.pollInput();
+
+        for (GameAction action : currentActions) {
+            switch (action) {
+                case UP         -> Gdx.app.log("INPUT MAPPER", "CONTROLLER PRESSED JUMP");
+                case DOWN       ->  Gdx.app.log("INPUT MAPPER", "CONTROLLER PRESSED CROUCH");
+                case LEFT       -> Gdx.app.log("INPUT MAPPER", "CONTROLLER PRESSED LEFT");
+                case RIGHT      ->  Gdx.app.log("INPUT MAPPER", "CONTROLLER PRESSED RIGHT");
+
+                case PAUSE      -> Gdx.app.log("INPUT MAPPER", "CONTROLLER PRESSED PAUSE");
+
+                case LIGHTATK   -> Gdx.app.log("INPUT MAPPER", "CONTROLLER PRESSED LIGHT ATTACK");
+                case MEDIUMATK  -> Gdx.app.log("INPUT MAPPER", "CONTROLLER PRESSED MEDIUM ATTACK");
+                case HEAVYATK   -> Gdx.app.log("INPUT MAPPER", "CONTROLLER PRESSED HEAVY ATTACK");
+                case SPECIALATK -> Gdx.app.log("INPUT MAPPER", "CONTROLLER PRESSED SPECIAL ATTACK");
+                case ASSISTONE  -> Gdx.app.log("INPUT MAPPER", "CONTROLLER PRESSED ASSIST ONE");
+                case ASSISTTWO  -> Gdx.app.log("INPUT MAPPER", "CONTROLLER PRESSED ASSIST TWO");
+            }
+        }
+
         float deltaTime = Gdx.graphics.getDeltaTime();
         time += deltaTime;
 
@@ -118,6 +195,8 @@ public class GameMain extends ApplicationAdapter
         sceneManager.update(deltaTime);
         sceneManager.setShaderProvider(new AnimeShaderProvider());
         sceneManager.render();
+
+        inputMapper.updatePreviousStates();
     }
 
     public void processInput() {}

@@ -13,7 +13,6 @@ public class KafuStateMachine extends StateMachine {
     public CompositeState aliveState;
     public CompositeState deadState;
 
-
     public KafuStateMachine(Fighter fighter) {
         this.aliveState = new KafuAliveState(fighter);
         this.deadState = new KafuDeadState(fighter);
